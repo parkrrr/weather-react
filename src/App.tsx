@@ -28,7 +28,7 @@ function App() {
   }
 
   useEffect(() => {
-    fetch(new Request(`https://api.weather.gov/stations/${stationId}/observations?limit=25`, {
+    fetch(new Request(`https://api.weather.gov/stations/${stationId}/observations?limit=100`, {
       method: 'GET',
       headers: new Headers({
         'Accept': 'application/geo+json',
@@ -37,6 +37,7 @@ function App() {
     })).then(res => res.json())
       .then(
         (result: ObservationResponse) => {
+          console.debug(result);
           setIsLoaded(true);
           setItems(result);
         },
