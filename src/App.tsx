@@ -7,12 +7,13 @@ import Navigation from './components/Navigation';
 import Temperature from './components/Temperature';
 import Humidity from './components/Humidity';
 import { useEffect, useState } from 'react';
+import { ObservationResponse } from './weather.types';
 
 function App() {
   const theme = createTheme();
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<ObservationResponse | undefined>();
   
   let stationId: String = "";
   const match = matchPath({
@@ -26,20 +27,16 @@ function App() {
     console.debug(`stationId: ${stationId}`);
   }
 
-  const weatherApiHeaders = new Headers({
-    'Accept': 'application/geo+json',
-    'User-Agent': "https://weather.parkrrr.net/",
-  });
-
   useEffect(() => {
     fetch(new Request(`https://api.weather.gov/stations/${stationId}/observations?limit=25`, {
       method: 'GET',
-      headers: weatherApiHeaders,
-      mode: 'cors',
-      cache: 'default',
+      headers: new Headers({
+        'Accept': 'application/geo+json',
+        'User-Agent': 'https://weather.parkrrr.net/',
+      }),
     })).then(res => res.json())
       .then(
-        (result) => {
+        (result: ObservationResponse) => {
           setIsLoaded(true);
           setItems(result);
         },
@@ -51,14 +48,13 @@ function App() {
           setError(error);
         }
       )
-  }, [])
+  }, [stationId])
 
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <Routes>
-          <Route path="/:stationId/" element={<Pressure data={items} />} />
-          <Route path="/:stationId/pressure/" element={<Pressure data={items} />} />
+          <Route path="/:stationId/pressure/" element={<Pressure observations={items} error={error} loaded={isLoaded} />} />
           <Route path="/:stationId/temperature/" element={<Temperature />} />
           <Route path="/:stationId/humidity/" element={<Humidity />} />
         </Routes>
