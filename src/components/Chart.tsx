@@ -18,7 +18,7 @@ function Chart(props: { data: IChartistSeriesData[], referenceValue: number | un
                         const date = new Date(value);
                         const day = date.toLocaleString('en-us', { weekday: 'short' })
                         const hours = date.getHours();
-                        const minutes = date.getMinutes();
+                        const minutes = date.getMinutes().toString().padStart(2, '0');
                         return `${day} ${hours}:${minutes}`
                     },
                 },
