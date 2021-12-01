@@ -1,7 +1,7 @@
 import { Card, CardActions, CardContent, Slider, Typography } from "@mui/material";
 import React from "react";
 
-function Resolution(props: { defaultValue: number, onChange: Function }) {
+function DateResolution(props: { defaultValue: number, onChange: Function }) {
     const [resolution, setResolution] = React.useState(props.defaultValue);
 
     const handleResolution = (event: any, newResolution: any) => {
@@ -9,35 +9,19 @@ function Resolution(props: { defaultValue: number, onChange: Function }) {
         props.onChange(newResolution);
     };
 
-    const marks = [
-        {
-            value: 40,
-            label: 'Least',
-        },
-        {
-            value: 80,
-            label: 'Some',
-        },
-        {
-            value: 120,
-            label: 'More',
-        },
-        {
-            value: 160,
-            label: 'Most',
-        }, {
-            value: 200,
-            label: 'All',
-        },
-
-    ];
-
+    const marks = [];
+    for (let i = 1; i <= 7; i++) {
+        marks.push({
+            value: i,
+            label: i.toString(),
+        });
+    };
 
     return (
         <Card sx={{ minWidth: 275 }}>
             <CardContent>
                 <Typography variant="h6" color="text.secondary" >
-                    Data Points
+                    Days Shown
                 </Typography>
             </CardContent>
             <CardActions>
@@ -46,9 +30,9 @@ function Resolution(props: { defaultValue: number, onChange: Function }) {
                     onChange={handleResolution}
                     valueLabelDisplay="auto"
                     marks={marks}
-                    min={40}
-                    max={200}
-                    step={null}
+                    min={1}
+                    max={7}
+                    step={1}
                     track={false}
                 />
             </CardActions>
@@ -56,4 +40,4 @@ function Resolution(props: { defaultValue: number, onChange: Function }) {
     );
 }
 
-export default Resolution;
+export default DateResolution;

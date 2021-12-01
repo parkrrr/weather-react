@@ -1,5 +1,5 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Box, Container, Paper } from '@mui/material';
+import { Box, Container, Paper, Stack } from '@mui/material';
 import { matchPath, Route, Routes } from 'react-router-dom';
 import Pressure from './components/Pressure';
 import Navigation from './components/Navigation';
@@ -9,8 +9,10 @@ import { useEffect, useState } from 'react';
 import { Observation, ObservationCollectionGeoJson } from './vendor/weather.gov.types';
 import './styles/main.scss';
 import Resolution from './components/Resolution';
+import DateResolution from './components/DateResolution';
 
 const DEFAULT_RESOLUTION = 80;
+const DEFAULT_DATE_RESOLUTION = 3;
 
 function App() {
   const theme = createTheme();
@@ -18,9 +20,14 @@ function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState<Observation[] | undefined>();
   const [resolution, setResolution] = useState(DEFAULT_RESOLUTION);
+  const [dateResolution, setDateResolution] = useState(DEFAULT_DATE_RESOLUTION);
 
   const handleResolution = (newResolution: any) => {
     setResolution(newResolution);
+  }
+
+  const handleDateResolution = (newResolution: any) => {
+    setDateResolution(newResolution);
   }
 
   let stationId: string = "";
@@ -55,7 +62,7 @@ function App() {
           }
 
           const refDate = new Date();
-          refDate.setDate(refDate.getDate() - 3);
+          refDate.setDate(refDate.getDate() - dateResolution);
 
           const filteredObservations = observations.filter((obs) => obs.timestamp && new Date(obs.timestamp) > refDate);
 
@@ -80,7 +87,7 @@ function App() {
           setError(error);
         }
       )
-  }, [stationId, resolution])
+  }, [stationId, resolution, dateResolution])
 
   return (
     <ThemeProvider theme={theme}>
@@ -91,7 +98,10 @@ function App() {
           <Route path="/:stationId/humidity/" element={<Humidity observations={items} error={error} loaded={isLoaded} />} />
         </Routes>
         <Box sx={{ mt: 1 }}>
+          <Stack spacing={1}>
           <Resolution defaultValue={DEFAULT_RESOLUTION} onChange={handleResolution} />
+          <DateResolution defaultValue={DEFAULT_DATE_RESOLUTION} onChange={handleDateResolution} />
+          </Stack>
         </Box>
         <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
           <Navigation stationId={stationId} />
