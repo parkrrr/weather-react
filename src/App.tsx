@@ -7,6 +7,7 @@ import Temperature from './components/Temperature';
 import Humidity from './components/Humidity';
 import { useEffect, useState } from 'react';
 import { Observation, ObservationCollectionGeoJson } from './vendor/weather.gov.types';
+import './styles/main.scss';
 
 function App() {
   const theme = createTheme();
