@@ -1,5 +1,5 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Container, Paper } from '@mui/material';
+import { Box, Container, Paper, Stack } from '@mui/material';
 import { matchPath, Route, Routes } from 'react-router-dom';
 import Pressure from './components/Pressure';
 import Navigation from './components/Navigation';
@@ -8,13 +8,21 @@ import Humidity from './components/Humidity';
 import { useEffect, useState } from 'react';
 import { Observation, ObservationCollectionGeoJson } from './vendor/weather.gov.types';
 import './styles/main.scss';
+import Resolution from './components/Resolution';
+
+const DEFAULT_RESOLUTION = 80;
 
 function App() {
   const theme = createTheme();
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState<Observation[] | undefined>();
-  
+  const [resolution, setResolution] = useState(DEFAULT_RESOLUTION);
+
+  const handleResolution = (newResolution: any) => {
+    setResolution(newResolution);
+  }
+
   let stationId: string = "";
   const match = matchPath({
     path: "/:stationId/",
@@ -29,7 +37,9 @@ function App() {
   useEffect(() => {
     if (!stationId) return;
 
-    fetch(new Request(`https://api.weather.gov/stations/${stationId}/observations?limit=500`, {
+    setIsLoaded(false);
+
+    fetch(new Request(`https://api.weather.gov/stations/${stationId}/observations?limit=${resolution}`, {
       method: 'GET',
       headers: new Headers({
         'Accept': 'application/geo+json',
@@ -41,6 +51,10 @@ function App() {
           console.debug(result);
 
           const observations = result.features.map((r) => r.properties as Observation);
+
+          if (observations.length < resolution) {
+            console.warn(`Requested ${resolution} items but received ${observations.length}`);
+          }
 
           const refDate = new Date();
           refDate.setDate(refDate.getDate() - 3);
@@ -71,16 +85,19 @@ function App() {
           setError(error);
         }
       )
-  }, [stationId])
+  }, [stationId, resolution])
 
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
-        <Routes>
-          <Route path="/:stationId/pressure/" element={<Pressure observations={items} error={error} loaded={isLoaded} />} />
-          <Route path="/:stationId/temperature/" element={<Temperature observations={items} error={error} loaded={isLoaded} />} />
-          <Route path="/:stationId/humidity/" element={<Humidity />} />
-        </Routes>
+          <Routes>
+            <Route path="/:stationId/pressure/" element={<Pressure observations={items} error={error} loaded={isLoaded} />} />
+            <Route path="/:stationId/temperature/" element={<Temperature observations={items} error={error} loaded={isLoaded} />} />
+            <Route path="/:stationId/humidity/" element={<Humidity observations={items} error={error} loaded={isLoaded} />} />
+          </Routes>
+          <Box sx={{ mt: 7 }}>
+              <Resolution defaultValue={DEFAULT_RESOLUTION} onChange={handleResolution} />
+          </Box>
         <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
           <Navigation stationId={stationId} />
         </Paper>

@@ -1,5 +1,4 @@
-import { DataThresholding } from "@mui/icons-material";
-import { Skeleton } from "@mui/material";
+import { Skeleton, Stack } from "@mui/material";
 import { IChartistSeriesData } from "chartist";
 import { useEffect, useState } from "react";
 import { Observation } from "../vendor/weather.gov.types";
@@ -42,14 +41,13 @@ const Pressure = (props: { observations: Observation[] | undefined, loaded: bool
   const label = `${value} inHg`
 
   return (
-    <div>
-      <Hero loaded={isLoaded} value={label} timestamp={latestObservation?.timestamp} />
-      {
         isLoaded && observtions ? (
-          <Chart data={[data]} referenceValue={29.92} interpolationFn={(v: number) => v.toFixed(2)} />
-        ) : (<Skeleton variant="rectangular" width="100%" height={250} />)
-      }
-    </div>
+          <Stack>
+            <Hero loaded={isLoaded} value={label} timestamp={latestObservation?.timestamp} />
+            <Chart data={[data]} referenceValue={29.92} interpolationFn={(v: number) => v.toFixed(2)} />
+          </Stack>
+        ) : (<Skeleton variant="rectangular" width={350} height={500} />)
+      
   );
 }
 

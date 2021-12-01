@@ -1,4 +1,4 @@
-import { Skeleton, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 function Hero(props: { loaded: boolean, value: string | null, timestamp: string | undefined }) {
@@ -47,26 +47,16 @@ function Hero(props: { loaded: boolean, value: string | null, timestamp: string 
 
     const timestamp = new Date(props.timestamp).toLocaleString();
 
-    if (isLoaded) {
-        return (
-            <div>
-                <Typography align="center" variant="h6" gutterBottom component="div">
-                    {props.value?.toString()} as of {relativeDateString}
-                </Typography>
-                <Typography align="center" variant="overline" display="block" gutterBottom>
-                    {timestamp}
-                </Typography>
-            </div>
-        );
-    }
-    else {
-        return (
-            <div>
-                <Skeleton variant="rectangular" width="100%" height={32} />
-                <Skeleton variant="rectangular" width="100%" height={32} />
-            </div>
-        );
-    }
+    return (
+        <Stack spacing={2}>
+            <Typography align="center" variant="h6" gutterBottom component="div">
+                {props.value?.toString()} as of {relativeDateString}
+            </Typography>
+            <Typography align="center" variant="overline" display="block" gutterBottom>
+                {timestamp}
+            </Typography>
+        </Stack>
+    );
 }
 
 export default Hero;

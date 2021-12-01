@@ -1,13 +1,15 @@
 import Chartist, { IChartistSeriesData } from "chartist";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function Chart(props: { data: IChartistSeriesData[], referenceValue: number | undefined, interpolationFn: Function }) {
     const chart = useRef(null);
+    const [properties, setProps] = useState(props);
+    useEffect(() => { setProps(props); }, [props]);
 
     useEffect(() => {
         if (chart.current) {
             new Chartist.Line(chart.current, {
-                series: props.data,
+                series: properties.data,
             }, {
                 axisX: {
                     type: Chartist.FixedScaleAxis,
@@ -21,15 +23,15 @@ function Chart(props: { data: IChartistSeriesData[], referenceValue: number | un
                     },
                 },
                 axisY: {
-                    referenceValue: props.referenceValue,
-                    labelInterpolationFnc: props.interpolationFn
+                    referenceValue: properties.referenceValue,
+                    labelInterpolationFnc: properties.interpolationFn
                 },
                 lineSmooth: Chartist.Interpolation.cardinal({
                     fillHoles: true,
                 })
             });
         }
-      }, []);
+      }, [properties]);
 
     return (
         <div className="chart ct-minor-second" ref={chart}></div>
