@@ -26,7 +26,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "generate": "npx swagger-typescript-api -p ./src/vendor/weather.gov.openapi.json -o ./src/vendor -n weather.gov.types.ts"
   },
   "eslintConfig": {
     "extends": [

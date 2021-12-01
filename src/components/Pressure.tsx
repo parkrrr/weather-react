@@ -1,36 +1,37 @@
-import { Card, Paper, Skeleton, Typography } from "@mui/material";
+import { Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Feature, ObservationResponse } from "../weather.types";
+import { Observation } from "../vendor/weather.gov.types";
 import Hero from "./Hero";
 
-const Pressure = (props: { observations: ObservationResponse | undefined, loaded: boolean, error: any }) => {
-
-  let { stationId } = useParams();
-
+const Pressure = (props: { observations: Observation[] | undefined, loaded: boolean, error: any }) => {
   const [isLoaded, setIsLoaded] = useState(props.loaded);
 
   useEffect(() => { setIsLoaded(props.loaded); }, [props.loaded]);
 
-  const observtions: Feature[] | undefined = props.observations?.features;
-  let latestObservation: Feature | null = null;
+  const observtions: Observation[] | undefined = props.observations;
+  let latestObservation: Observation | null = null;
   const items: any[] = []
+  let value: string | null = null;
 
   if (observtions) {
-    observtions.sort(function (a, b) {
-      return new Date(b.properties.timestamp).getTime() - new Date(a.properties.timestamp).getTime();
-    });
-
     observtions.forEach((obs) => {
-      items.push(<li key={obs.id}>{obs.properties.timestamp} - {obs.properties.barometricPressure.value}</li>);
+      items.push(<li key={obs["@id"]}>{obs.timestamp} - {obs.barometricPressure?.value}</li>);
     });
 
-    latestObservation = observtions[0];
+    // find the latest observation that has valid data
+    for (let i = 0; i < observtions.length; i++) {
+      const obs = observtions[i];
+      if (obs.timestamp && obs.barometricPressure?.value) {
+        latestObservation = obs;
+        value = (obs.barometricPressure.value * 0.0002953).toFixed(2);
+        break;
+      }
+    }
   }
 
   return isLoaded && observtions ? (
 <div>
-    <Hero observation={latestObservation} mode="pressure" />
+    <Hero value={value} timestamp={latestObservation?.timestamp} mode="pressure" />
     <ol>
       {items}
     </ol>

@@ -1,33 +1,57 @@
 import { Typography } from "@mui/material";
-import { Feature } from "../weather.types";
 
 export type HeroMode = "humidity" | "temperature" | "pressure";
 
-function Hero(props: { observation: Feature | null, mode: HeroMode }) {
+function Hero(props: { value: string | null, timestamp: string | undefined, mode: HeroMode }) {
 
-    let value: number | null | undefined;
-    switch (props.mode) {
-        case "humidity":
-            value = props.observation?.properties.relativeHumidity.value;
-            break;
-        case "temperature":
-            value = props.observation?.properties.temperature.value;
-            break;
-        case "pressure":
-            value = props.observation?.properties.barometricPressure.value
-            break;
-        default:
-            value = -1;
-            break;
+    if (!props.value) {
+        return (
+            <div>
+            </div>
+        )
     }
+
+    const rtf = new Intl.RelativeTimeFormat("en", {
+        localeMatcher: "best fit",
+        numeric: "auto",
+    });
+
+    if (!props.timestamp) {
+        return (
+            <Typography variant="h6" gutterBottom component="div">
+                {props.value}
+            </Typography>
+        );
+    }
+
+    const dateDiff = (new Date(props.timestamp).getTime() - Date.now()) / 1000;
+    var second = 1, 
+        minute = second * 60,
+        hour = minute * 60,
+        day = hour * 24;
+
+    let relativeDateString = '';
+    const absDateDiff = Math.abs(dateDiff);
+
+    if (absDateDiff > day) {
+        relativeDateString = rtf.format(Math.floor(dateDiff / day), 'day');
+    } else if (absDateDiff > hour) {
+        relativeDateString = rtf.format(Math.floor(dateDiff / hour), 'hour');
+    } else if (absDateDiff > minute) {
+        relativeDateString = rtf.format(Math.floor(dateDiff / minute), 'minute');
+    } else {
+        relativeDateString = rtf.format(Math.floor(dateDiff / second), 'second');
+    }
+
+    const timestamp = new Date(props.timestamp).toLocaleString();
 
     return (
         <div>
             <Typography variant="h6" gutterBottom component="div">
-                {value} as of XX minutes ago
+                {props.value.toString()} as of {relativeDateString}
             </Typography>
             <Typography variant="overline" display="block" gutterBottom>
-                {props.observation?.properties.timestamp}
+                {timestamp}
             </Typography>
         </div>
     );
