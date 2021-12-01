@@ -26,9 +26,10 @@ function Chart(props: { data: IChartistSeriesData[], referenceValue: number | un
                     referenceValue: properties.referenceValue,
                     labelInterpolationFnc: properties.interpolationFn
                 },
-                lineSmooth: Chartist.Interpolation.cardinal({
+                lineSmooth: Chartist.Interpolation.simple({
                     fillHoles: true,
-                })
+                }),
+                
             });
         }
       }, [properties]);
