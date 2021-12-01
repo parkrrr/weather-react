@@ -1,3 +1,4 @@
+import { DataThresholding } from "@mui/icons-material";
 import { Skeleton } from "@mui/material";
 import { IChartistSeriesData } from "chartist";
 import { useEffect, useState } from "react";
@@ -11,17 +12,25 @@ const Pressure = (props: { observations: Observation[] | undefined, loaded: bool
 
   const observtions: Observation[] | undefined = props.observations;
   let latestObservation: Observation | null = null;
-  const items: any[] = []
+
   let value: string | null = null;
+  const data: IChartistSeriesData = {
+    name: "pressure",
+    data: [],
+  };
 
   if (observtions) {
-    observtions.forEach((obs) => {
-      items.push(<li key={obs["@id"]}>{obs.timestamp} - {obs.barometricPressure?.value}</li>);
-    });
+    for (let i = 0; i < observtions.length; i++) {
+      const obs = observtions[i];
+      if (obs.timestamp && obs.barometricPressure?.value && data.data) {
+        data.data.push({ x: new Date(obs.timestamp), y: obs.barometricPressure.value* 0.0002953 } as any);
+      }
+    }
 
     // find the latest observation that has valid data
     for (let i = 0; i < observtions.length; i++) {
       const obs = observtions[i];
+
       if (obs.timestamp && obs.barometricPressure?.value) {
         latestObservation = obs;
         value = (obs.barometricPressure.value * 0.0002953).toFixed(2);
@@ -32,17 +41,12 @@ const Pressure = (props: { observations: Observation[] | undefined, loaded: bool
 
   const label = `${value} inHg`
 
-  const data: IChartistSeriesData[] = [{
-    name: "pressure",
-    data: observtions?.map((obs) => { return { x: new Date(obs.timestamp!!), y: obs.barometricPressure!.value! }; }),
-  }];
-
   return (
     <div>
       <Hero loaded={isLoaded} value={label} timestamp={latestObservation?.timestamp} />
       {
         isLoaded && observtions ? (
-          <Chart data={data} referenceValue={29.92} interpolationFn={(v: any) => v} />
+          <Chart data={[data]} referenceValue={29.92} interpolationFn={(v: number) => v.toFixed(2)} />
         ) : (<Skeleton variant="rectangular" width="100%" height={250} />)
       }
     </div>

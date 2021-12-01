@@ -29,7 +29,7 @@ function App() {
   useEffect(() => {
     if (!stationId) return;
 
-    fetch(new Request(`https://api.weather.gov/stations/${stationId}/observations?limit=100`, {
+    fetch(new Request(`https://api.weather.gov/stations/${stationId}/observations?limit=500`, {
       method: 'GET',
       headers: new Headers({
         'Accept': 'application/geo+json',
@@ -41,7 +41,13 @@ function App() {
           console.debug(result);
 
           const observations = result.features.map((r) => r.properties as Observation);
-          observations.sort(function (a: Observation, b: Observation) {
+
+          const refDate = new Date();
+          refDate.setDate(refDate.getDate() - 3);
+
+          const filteredObservations = observations.filter((obs) => obs.timestamp && new Date(obs.timestamp) > refDate);
+
+          filteredObservations.sort(function (a: Observation, b: Observation) {
             if (!a.timestamp && !b.timestamp) {
               return 0;
             } else if (!a.timestamp) {
@@ -53,7 +59,7 @@ function App() {
             return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
           });
 
-          setItems(observations);
+          setItems(filteredObservations);
           setIsLoaded(true);
         },
         // Note: it's important to handle errors here

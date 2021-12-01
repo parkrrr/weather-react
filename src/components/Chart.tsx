@@ -12,9 +12,13 @@ function Chart(props: { data: IChartistSeriesData[], referenceValue: number | un
                 axisX: {
                     type: Chartist.FixedScaleAxis,
                     divisor: 9,
-                    // labelInterpolationFnc: function (value) {
-                    //     return moment(value).format('ddd HH:mm');
-                    // }
+                    labelInterpolationFnc: function (value: number) {
+                        const date = new Date(value);
+                        const day = date.toLocaleString('en-us', { weekday: 'short' })
+                        const hours = date.getHours();
+                        const minutes = date.getMinutes();
+                        return `${day} ${hours}:${minutes}`
+                    },
                 },
                 axisY: {
                     referenceValue: props.referenceValue,

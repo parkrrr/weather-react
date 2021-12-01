@@ -17,7 +17,7 @@ function Navigation(props: { stationId: string }) {
       >
         <BottomNavigationAction component={Link as any} to={`/${props.stationId}/pressure`} label="Pressure" value="pressure" icon={<SpeedIcon />} />
         <BottomNavigationAction component={Link as any} to={`/${props.stationId}/temperature`} label="Temperature" value="temperature" icon={<ThermostatIcon />} />
-        <BottomNavigationAction component={Link as any} to={`/${props.stationId}/humidity`} value="humidity" icon={<WaterIcon />} />
+        <BottomNavigationAction component={Link as any} to={`/${props.stationId}/humidity`} label="Humidity" value="humidity" icon={<WaterIcon />} />
       </BottomNavigation>
       );
 }
