@@ -1,16 +1,20 @@
-import { Typography } from "@mui/material";
+import { Skeleton, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 
 export type HeroMode = "humidity" | "temperature" | "pressure";
 
-function Hero(props: { value: string | null, timestamp: string | undefined, mode: HeroMode }) {
+function Hero(props: { loaded: boolean, value: string | null, timestamp: string | undefined, mode: HeroMode }) {
 
-    if (!props.value) {
+    const [isLoaded, setIsLoaded] = useState(props.loaded);
+    useEffect(() => { setIsLoaded(props.loaded); }, [props.loaded]);
+
+    if (isLoaded && !props.value) {
         return (
             <div>
             </div>
         )
     }
-
+    
     const rtf = new Intl.RelativeTimeFormat("en", {
         localeMatcher: "best fit",
         numeric: "auto",
@@ -45,16 +49,26 @@ function Hero(props: { value: string | null, timestamp: string | undefined, mode
 
     const timestamp = new Date(props.timestamp).toLocaleString();
 
-    return (
-        <div>
-            <Typography variant="h6" gutterBottom component="div">
-                {props.value.toString()} as of {relativeDateString}
-            </Typography>
-            <Typography variant="overline" display="block" gutterBottom>
-                {timestamp}
-            </Typography>
-        </div>
-    );
+    if (isLoaded) {
+        return (
+            <div>
+                <Typography align="center" variant="h6" gutterBottom component="div">
+                    {props.value?.toString()} as of {relativeDateString}
+                </Typography>
+                <Typography align="center" variant="overline" display="block" gutterBottom>
+                    {timestamp}
+                </Typography>
+            </div>
+        );
+    }
+    else {
+        return (
+            <div>
+                <Skeleton variant="rectangular" width="100%" height={32} />
+                <Skeleton variant="rectangular" width="100%" height={32} />
+            </div>
+        );
+    }
 }
 
 export default Hero;

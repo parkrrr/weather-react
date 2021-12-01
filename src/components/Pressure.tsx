@@ -5,7 +5,6 @@ import Hero from "./Hero";
 
 const Pressure = (props: { observations: Observation[] | undefined, loaded: boolean, error: any }) => {
   const [isLoaded, setIsLoaded] = useState(props.loaded);
-
   useEffect(() => { setIsLoaded(props.loaded); }, [props.loaded]);
 
   const observtions: Observation[] | undefined = props.observations;
@@ -29,14 +28,18 @@ const Pressure = (props: { observations: Observation[] | undefined, loaded: bool
     }
   }
 
-  return isLoaded && observtions ? (
-<div>
-    <Hero value={value} timestamp={latestObservation?.timestamp} mode="pressure" />
-    <ol>
-      {items}
-    </ol>
-</div>
-  ) : (<Skeleton variant="rectangular" width={210} height={118} />)
-};
+  return (
+    <div>
+      <Hero loaded={isLoaded} value={value} timestamp={latestObservation?.timestamp} mode="pressure" />
+      {
+        isLoaded && observtions ? (
+          <ol>
+            {items}
+          </ol>
+        ) : (<Skeleton variant="rectangular" width="100%" height={250} />)
+      }
+    </div>
+  );
+}
 
 export default Pressure;

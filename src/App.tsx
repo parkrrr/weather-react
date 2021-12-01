@@ -38,7 +38,6 @@ function App() {
       .then(
         (result: ObservationCollectionGeoJson) => {
           console.debug(result);
-          setIsLoaded(true);
 
           const observations = result.features.map((r) => r.properties as Observation);
           observations.sort(function (a: Observation, b: Observation) {
@@ -54,6 +53,7 @@ function App() {
           });
 
           setItems(observations);
+          setIsLoaded(true);
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
