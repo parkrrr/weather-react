@@ -48,8 +48,6 @@ function App() {
     })).then(res => res.json())
       .then(
         (result: ObservationCollectionGeoJson) => {
-          console.debug(result);
-
           const observations = result.features.map((r) => r.properties as Observation);
 
           if (observations.length < resolution) {
@@ -76,9 +74,6 @@ function App() {
           setItems(filteredObservations);
           setIsLoaded(true);
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
         (error) => {
           console.error(error);
           setIsLoaded(true);
