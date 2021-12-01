@@ -1,4 +1,4 @@
-import { Skeleton, Stack } from "@mui/material";
+import { Card, CardContent, Skeleton } from "@mui/material";
 import { IChartistSeriesData } from "chartist";
 import { useEffect, useState } from "react";
 import { Observation } from "../vendor/weather.gov.types";
@@ -22,7 +22,7 @@ const Pressure = (props: { observations: Observation[] | undefined, loaded: bool
     for (let i = 0; i < observtions.length; i++) {
       const obs = observtions[i];
       if (obs.timestamp && obs.barometricPressure?.value && data.data) {
-        data.data.push({ x: new Date(obs.timestamp), y: obs.barometricPressure.value* 0.0002953 } as any);
+        data.data.push({ x: new Date(obs.timestamp), y: obs.barometricPressure.value * 0.0002953 } as any);
       }
     }
 
@@ -41,13 +41,14 @@ const Pressure = (props: { observations: Observation[] | undefined, loaded: bool
   const label = `${value} inHg`
 
   return (
-        isLoaded && observtions ? (
-          <Stack>
-            <Hero loaded={isLoaded} value={label} timestamp={latestObservation?.timestamp} />
-            <Chart data={[data]} referenceValue={29.92} interpolationFn={(v: number) => v.toFixed(2)} />
-          </Stack>
-        ) : (<Skeleton variant="rectangular" width={350} height={500} />)
-      
+    isLoaded && observtions ? (
+      <Card sx={{ pb: 4, minWidth: 275 }}>
+        <CardContent>
+          <Hero loaded={isLoaded} value={label} timestamp={latestObservation?.timestamp} />
+          <Chart data={[data]} referenceValue={29.92} interpolationFn={(v: number) => v.toFixed(2)} />
+        </CardContent>
+      </Card>
+    ) : (<Skeleton variant="rectangular" width={350} height={430} />)
   );
 }
 

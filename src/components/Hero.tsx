@@ -48,11 +48,11 @@ function Hero(props: { loaded: boolean, value: string | null, timestamp: string 
     const timestamp = new Date(props.timestamp).toLocaleString();
 
     return (
-        <Stack spacing={2}>
-            <Typography align="center" variant="h6" gutterBottom component="div">
+        <Stack>
+            <Typography variant="h6" component="div">
                 {props.value?.toString()} as of {relativeDateString}
             </Typography>
-            <Typography align="center" variant="overline" display="block" gutterBottom>
+            <Typography variant="overline" display="block">
                 {timestamp}
             </Typography>
         </Stack>

@@ -1,4 +1,4 @@
-import { Skeleton, Stack } from "@mui/material";
+import { Card, CardContent, Skeleton } from "@mui/material";
 import { IChartistSeriesData } from "chartist";
 import { useEffect, useState } from "react";
 import { Observation } from "../vendor/weather.gov.types";
@@ -41,11 +41,13 @@ const Temperature = (props: { observations: Observation[] | undefined, loaded: b
 
   return (
     isLoaded && observtions ? (
-      <Stack>
+      <Card sx={{ pb: 4, minWidth: 275 }}>
+        <CardContent>
         <Hero loaded={isLoaded} value={label} timestamp={latestObservation?.timestamp} />
         <Chart data={[data]} referenceValue={undefined} interpolationFn={(v: number) => v.toFixed(0)} />
-      </Stack>
-    ) : (<Skeleton variant="rectangular" width={350} height={500} />)
+        </CardContent>
+      </Card>
+    ) : (<Skeleton variant="rectangular" width={350} height={430} />)
   );
 }
 

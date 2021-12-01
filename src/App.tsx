@@ -1,5 +1,5 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Box, Container, Paper, Stack } from '@mui/material';
+import { Box, Container, Paper } from '@mui/material';
 import { matchPath, Route, Routes } from 'react-router-dom';
 import Pressure from './components/Pressure';
 import Navigation from './components/Navigation';
@@ -69,7 +69,7 @@ function App() {
             } else if (!b.timestamp) {
               return -1;
             }
-      
+
             return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
           });
 
@@ -90,14 +90,14 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
-          <Routes>
-            <Route path="/:stationId/pressure/" element={<Pressure observations={items} error={error} loaded={isLoaded} />} />
-            <Route path="/:stationId/temperature/" element={<Temperature observations={items} error={error} loaded={isLoaded} />} />
-            <Route path="/:stationId/humidity/" element={<Humidity observations={items} error={error} loaded={isLoaded} />} />
-          </Routes>
-          <Box sx={{ mt: 7 }}>
-              <Resolution defaultValue={DEFAULT_RESOLUTION} onChange={handleResolution} />
-          </Box>
+        <Routes>
+          <Route path="/:stationId/pressure/" element={<Pressure observations={items} error={error} loaded={isLoaded} />} />
+          <Route path="/:stationId/temperature/" element={<Temperature observations={items} error={error} loaded={isLoaded} />} />
+          <Route path="/:stationId/humidity/" element={<Humidity observations={items} error={error} loaded={isLoaded} />} />
+        </Routes>
+        <Box sx={{ mt: 1 }}>
+          <Resolution defaultValue={DEFAULT_RESOLUTION} onChange={handleResolution} />
+        </Box>
         <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
           <Navigation stationId={stationId} />
         </Paper>
