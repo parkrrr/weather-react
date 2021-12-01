@@ -1,9 +1,7 @@
 import { Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
-export type HeroMode = "humidity" | "temperature" | "pressure";
-
-function Hero(props: { loaded: boolean, value: string | null, timestamp: string | undefined, mode: HeroMode }) {
+function Hero(props: { loaded: boolean, value: string | null, timestamp: string | undefined }) {
 
     const [isLoaded, setIsLoaded] = useState(props.loaded);
     useEffect(() => { setIsLoaded(props.loaded); }, [props.loaded]);

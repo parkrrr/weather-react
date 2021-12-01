@@ -28,9 +28,11 @@ const Pressure = (props: { observations: Observation[] | undefined, loaded: bool
     }
   }
 
+  const label = `${value} inHg`
+
   return (
     <div>
-      <Hero loaded={isLoaded} value={value} timestamp={latestObservation?.timestamp} mode="pressure" />
+      <Hero loaded={isLoaded} value={label} timestamp={latestObservation?.timestamp} />
       {
         isLoaded && observtions ? (
           <ol>

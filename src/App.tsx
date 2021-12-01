@@ -71,7 +71,7 @@ function App() {
       <Container component="main" maxWidth="xs">
         <Routes>
           <Route path="/:stationId/pressure/" element={<Pressure observations={items} error={error} loaded={isLoaded} />} />
-          <Route path="/:stationId/temperature/" element={<Temperature />} />
+          <Route path="/:stationId/temperature/" element={<Temperature observations={items} error={error} loaded={isLoaded} />} />
           <Route path="/:stationId/humidity/" element={<Humidity />} />
         </Routes>
         <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
