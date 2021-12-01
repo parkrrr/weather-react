@@ -14,7 +14,7 @@ function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState<Observation[] | undefined>();
   
-  let stationId: String = "";
+  let stationId: string = "";
   const match = matchPath({
     path: "/:stationId/",
     caseSensitive: false,
@@ -23,12 +23,11 @@ function App() {
 
   if (match && match.params.stationId) {
     stationId = match?.params.stationId;
-    console.debug(`stationId: ${stationId}`);
   }
 
   useEffect(() => {
     if (!stationId) return;
-    
+
     fetch(new Request(`https://api.weather.gov/stations/${stationId}/observations?limit=100`, {
       method: 'GET',
       headers: new Headers({
@@ -76,7 +75,7 @@ function App() {
           <Route path="/:stationId/humidity/" element={<Humidity />} />
         </Routes>
         <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
-          <Navigation />
+          <Navigation stationId={stationId} />
         </Paper>
       </Container>
     </ThemeProvider>
