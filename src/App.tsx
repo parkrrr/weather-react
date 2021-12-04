@@ -46,7 +46,13 @@ function App() {
 
     setIsLoaded(false);
 
-    fetch(new Request(`https://api.weather.gov/stations/${stationId}/observations?limit=${resolution}`, {
+    const refDate = new Date();
+    refDate.setDate(refDate.getDate() - dateResolution);
+    const startDate = refDate.toISOString();
+
+    console.debug(`start date: ${startDate}`)
+
+    fetch(new Request(`https://api.weather.gov/stations/${stationId}/observations?limit=${resolution}&start=${startDate}`, {
       method: 'GET',
       headers: new Headers({
         'Accept': 'application/geo+json',
@@ -57,16 +63,7 @@ function App() {
         (result: ObservationCollectionGeoJson) => {
           const observations = result.features.map((r) => r.properties as Observation);
 
-          if (observations.length < resolution) {
-            console.warn(`Requested ${resolution} items but received ${observations.length}`);
-          }
-
-          const refDate = new Date();
-          refDate.setDate(refDate.getDate() - dateResolution);
-
-          const filteredObservations = observations.filter((obs) => obs.timestamp && new Date(obs.timestamp) > refDate);
-
-          filteredObservations.sort(function (a: Observation, b: Observation) {
+          observations.sort(function (a: Observation, b: Observation) {
             if (!a.timestamp && !b.timestamp) {
               return 0;
             } else if (!a.timestamp) {
@@ -78,7 +75,7 @@ function App() {
             return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
           });
 
-          setItems(filteredObservations);
+          setItems(observations);
           setIsLoaded(true);
         },
         (error) => {
@@ -99,8 +96,8 @@ function App() {
         </Routes>
         <Box sx={{ mt: 1 }}>
           <Stack spacing={1}>
-          <Resolution defaultValue={DEFAULT_RESOLUTION} onChange={handleResolution} />
-          <DateResolution defaultValue={DEFAULT_DATE_RESOLUTION} onChange={handleDateResolution} />
+            <Resolution defaultValue={DEFAULT_RESOLUTION} onChange={handleResolution} />
+            <DateResolution defaultValue={DEFAULT_DATE_RESOLUTION} onChange={handleDateResolution} />
           </Stack>
         </Box>
         <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
